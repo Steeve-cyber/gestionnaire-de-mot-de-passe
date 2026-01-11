@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mot de Passe Sécurisé</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: greenyellow;
+      font-family: georgia, serif;
+      text-align: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    input[type="password"],
+    input[type="text"] {
+      display: block;
+      padding: 12px;
+      font-size: 16px;
+      width: 280px;
+      margin: 10px auto;
+      border: 2px solid #999;
+      border-radius: 4px;
+      font-family: georgia, serif;
+    }
+
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #30c6a0;
+    }
+
+    label {
+      font-size: 16px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 14px;
+      margin: 8px;
+      cursor: pointer;
+      background-color: #30c6a0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #248a7a;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 15px;
+      min-height: 20px;
+    }
+
+    #messageConfirmation {
+      color: red;
+    }
+
+    #messageCopie {
+      color: green;
+    }
+
+    #barreContainer {
+      width: 280px;
+      height: 12px;
+      background: #d3d3d3;
+      margin: 20px auto;
+      border-radius: 25px;
+      overflow: hidden;
+    }
+
+    #barre {
+      height: 100%;
+      width: 0%;
+      background: red;
+      border-radius: 5px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .show-password {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .show-password input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    #conseils {
+      list-style: square;
+      display: inline-block;
+      margin: 30px auto;
+      text-align: left;
+      color: #333;
+    }
+
+    #conseils li {
+      margin: 8px 0;
+      padding-left: 10px;
+    }
+
+    #conseils li.valid {
+      color: green;
+    }
+
+    #conseils li.invalid {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Générateur de Mot de Passe Sécurisé</h1>
+
+  <input type="password" id="motdepasse" placeholder="Entrez un mot de passe" />
+  <input type="password" id="confirmation" placeholder="Confirmez le mot de passe" />
+
+  <div class="message" id="messageConfirmation"></div>
+
+  <div id="barreContainer">
+    <div id="barre"></div>
+  </div>
+
+  <div class="show-password">
+    <input type="checkbox" id="togglePassword">
+    <label for="togglePassword">Afficher le mot de passe</label>
+  </div>
+
+  <div>
+    <button id="generer">Générer un mot de passe sécurisé</button>
+    <button id="copier">Copier</button>
+  </div>
+
+  <ul id="conseils">
+    <li id="longueur">Au moins 8 caractères</li>
+    <li id="majuscule">Contient une majuscule</li>
+    <li id="chiffre">Contient un chiffre</li>
+    <li id="special">Contient un caractère spécial</li>
+  </ul>
+
+  <div class="message" id="messageCopie"></div>
+
+  <script>
+    const champ = document.getElementById("motdepasse");
+    const confirmation = document.getElementById("confirmation");
+    const messageConfirmation = document.getElementById("messageConfirmation");
+    const togglePassword = document.getElementById("togglePassword");
+    const longueur = document.getElementById("longueur");
+    const majuscule = document.getElementById("majuscule");
+    const chiffre = document.getElementById("chiffre");
+    const special = document.getElementById("special");
+    const barre = document.getElementById("barre");
+    const copierBtn = document.getElementById("copier");
+    const messageCopie = document.getElementById("messageCopie");
+
+    function genererMotDePasse(longueurMdp = 12) {
+      const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+      let mdp = "";
+      for (let i = 0; i < longueurMdp; i++) {
+        mdp += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+      }
+      return mdp;
+    }
+
+    function evaluerMotDePasse(mdp) {
+      let score = 0;
+
+      if (mdp.length >= 8) {
+        longueur.style.color = "green";
+        longueur.classList.add("valid");
+        score++;
+      } else {
+        longueur.style.color = "red";
+        longueur.classList.remove("valid");
+      }
+
+      if (/[A-Z]/.test(mdp)) {
+        majuscule.style.color = "green";
+        majuscule.classList.add("valid");
+        score++;
+      } else {
+        majuscule.style.color = "red";
+        majuscule.classList.remove("valid");
+      }
+
+      if (/\d/.test(mdp)) {
+        chiffre.style.color = "green";
+        chiffre.classList.add("valid");
+        score++;
+      } else {
+        chiffre.style.color = "red";
+        chiffre.classList.remove("valid");
+      }
+
+      if (/[!@#$%^&*()_+]/.test(mdp)) {
+        special.style.color = "green";
+        special.classList.add("valid");
+        score++;
+      } else {
+        special.style.color = "red";
+        special.classList.remove("valid");
+      }
+
+      barre.style.width = (score / 4) * 100 + "%";
+
+      if (score <= 1) barre.style.background = "red";
+      else if (score === 2) barre.style.background = "orange";
+      else if (score === 3) barre.style.background = "yellowgreen";
+      else barre.style.background = "green";
+    }
+
+    function verifierCorrespondance() {
+      if (champ.value === confirmation.value && champ.value.length > 0) {
+        messageConfirmation.textContent = "✓ Les mots de passe correspondent";
+        messageConfirmation.style.color = "green";
+      } else if (champ.value.length > 0 || confirmation.value.length > 0) {
+        messageConfirmation.textContent = "✗ Les mots de passe ne correspondent pas";
+        messageConfirmation.style.color = "red";
+      } else {
+        messageConfirmation.textContent = "";
+      }
+    }
+
+    champ.addEventListener("input", () => {
+      evaluerMotDePasse(champ.value);
+      verifierCorrespondance();
+    });
+
+    confirmation.addEventListener("input", verifierCorrespondance);
+
+    togglePassword.addEventListener("change", () => {
+      const type = togglePassword.checked ? "text" : "password";
+      champ.type = type;
+      confirmation.type = type;
+    });
+
+    document.getElementById("generer").addEventListener("click", () => {
+      const mdpGenere = genererMotDePasse(12);
+      champ.value = mdpGenere;
+      confirmation.value = mdpGenere;
+      evaluerMotDePasse(mdpGenere);
+      verifierCorrespondance();
+    });
+
+    copierBtn.addEventListener("click", () => {
+      if (champ.value.length === 0) {
+        messageCopie.textContent = "Aucun mot de passe à copier.";
+        messageCopie.style.color = "red";
+      } else {
+        navigator.clipboard.writeText(champ.value).then(() => {
+          messageCopie.textContent = "✓ Mot de passe copié !";
+          messageCopie.style.color = "green";
+          setTimeout(() => {
+            messageCopie.textContent = "";
+          }, 3000);
+        }).catch(() => {
+          messageCopie.textContent = "Erreur lors de la copie.";
+          messageCopie.style.color = "red";
+        });
+      }
+    });
+  </script>
+</body>
+</html>
