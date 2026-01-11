@@ -3,13 +3,13 @@
 Projet web simple réalisé en HTML pur.
 
 ## 🔗 Démo en ligne
-https://TON_USERNAME.github.io/mon-projet-html/
+https://steeve.github.io/gestionnaire de mot de passet-html/
 
 ## 🛠️ Technologies utilisées
 - HTML5
 
-## 📌 Objectif
+## 📌 But
 Apprendre à déployer un projet web avec GitHub Pages.
 
 ## 👤 Auteur
-Ton Nom
+steeve
